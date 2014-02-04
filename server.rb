@@ -57,15 +57,15 @@ def board_to_string
 end
 
 def send_win
-  send_message(Message.new("game", "win"), @player_turn)
-  send_message(Message.new("game", "lose"), (@player_turn + 1) % 2)
+  send_message Message.new("game", "win"), @player_turn
+  send_message Message.new("game", "lose"), (@player_turn + 1) % 2
 
   exit 0
 end
 
 def send_tie
-  send_message(Message.new("game", "lose"), 0)
-  send_message(Message.new("game", "lose"), 1)
+  send_message Message.new("game", "lose"), 0
+  send_message Message.new("game", "lose"), 1
 
   exit 0
 end
@@ -102,15 +102,15 @@ puts "Waiting for clients"
 
 (0...2).each do |i|
   @client_sockets[i], client_info = @socket.accept
-  msg = Message.new("connect", i.to_s)
+  msg = Message.new "connect", i.to_s
   puts "Player #{i.to_s} connected"
-  send_message(msg, i)
+  send_message msg, i
 end
 puts ""
 
 while true do
-  prompt_msg = Message.new("prompt", board_to_string)
-  send_message(prompt_msg, @player_turn)
+  prompt_msg = Message.new "prompt", board_to_string
+  send_message prompt_msg, @player_turn
 
   begin
     raw_msg = @client_sockets[@player_turn].recvfrom(16)[0].chomp
@@ -121,19 +121,19 @@ while true do
 
   if raw_msg.length <= 0
     print "Connection to player #{@player_turn.to_s} lost"
-    send_message(Message.new("error", 5), (@player_turn + 1) % 2)
+    send_message Message.new("error", 5), (@player_turn + 1) % 2
     break
   end
 
-  msg = Message.message_from_string(raw_msg)
-  unless Message.validate_message(msg)
+  msg = Message.message_from_string raw_msg
+  unless Message.validate_message msg
     puts "Invalid message received from player #{@player_turn.to_s}"
     send_message(Message.new("error", 0), @player_turn)
   end
 
   valid, err_code = handle_message msg
   unless valid
-    send_message(Message.new("error", err_code), @player_turn)
+    send_message Message.new("error", err_code), @player_turn
     next
   end
 
