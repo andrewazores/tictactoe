@@ -39,6 +39,7 @@ class Server
         raw_msg = @client_sockets[@player_turn].recvfrom(16)[0].chomp
       rescue
         print "Connection to player #{@player_turn.to_s} lost"
+        send_message Message.new("error", 5), (@player_turn + 1) % 2
         break
       end
 
@@ -66,8 +67,8 @@ class Server
   end
 
   def shutdown
-    (0...2).each do |i|
-      @client_sockets[i].close
+    @client_sockets.each do |s|
+        s.close
     end
     exit 0
   end
@@ -84,7 +85,7 @@ class Server
         @board[mess.to_i] = @player_turn
         return true, ""
       else
-        return false, 5
+        return false, 3
       end
     else
       puts "\tIllegal message method"
@@ -93,7 +94,7 @@ class Server
   end
 
   def send_message msg, player
-    puts "\nPlayer #{@player_turn.to_s} being sent message:"
+    puts "\nPlayer #{player} being sent message:"
     puts "\t#{msg.to_string}"
     @client_sockets[player].puts msg.to_string
   end
