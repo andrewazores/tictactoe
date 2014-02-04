@@ -11,9 +11,11 @@ end
 def handle_message msg
   method = msg.method.to_s
   message = msg.message.to_s
+
   if method == "connect"
     @player_number = message.to_i
     p "You are player number #{@player_number}"
+
   elsif method == "prompt"
     draw_board message
     while true do
@@ -23,13 +25,13 @@ def handle_message msg
         @socket.close
         exit 0
       end
-      if move.to_i >= 0 and move.to_i < 9
-        break
-      end
+      break if move.to_i >= 0 and move.to_i < 9
     end
-    send_message Message.new("move", move)
+    send_message Message.new "move", move
+
   elsif method == "error"
     p Message.error_message message
+
   elsif method == "game"
     if message == "win"
       p "You won! Yay!"
@@ -50,7 +52,7 @@ def draw_board msg
 end
 
 def send_message msg
-  @socket.puts(msg.to_string)
+  @socket.puts msg.to_string
 end
 
 if ARGV.length < 2
