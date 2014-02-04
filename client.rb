@@ -10,7 +10,10 @@ class Client
       shutdown
     end
     @server = server
-    @port = port
+    @port = port.to_i
+    unless @port.between? 0, 2**16-1
+      raise Exception.new "Port #{@port} out of range"
+    end
   end
 
   def start
@@ -110,7 +113,7 @@ if ARGV.length < 2
 end
 
 server = ARGV[0]
-port = ARGV[1]
+port = ARGV[1].to_i
 
-client = Client.new server, port.to_i
+client = Client.new server, port
 client.start
