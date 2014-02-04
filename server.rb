@@ -14,6 +14,9 @@ class Server
     @player_turn = 0
     @client_sockets = []
     @board = [-1] * 9
+    unless @port.between? 0, 2**16-1
+      raise Exception.new "Port #{@port} out of range"
+    end
   end
 
   def start
@@ -156,10 +159,6 @@ if ARGV.length < 1
 end
 
 port = ARGV[0].to_i
-unless port.between? 0, 2**16-1
-  p "Please enter a valid port number. #{port} is out of range"
-  exit 1
-end
 
 server = Server.new port
 server.start
