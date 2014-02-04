@@ -17,7 +17,7 @@ class Client
     p "Connecting to #{@server}:#{@port}"
     @socket = TCPSocket.new @server, @port
 
-    p "Connected to server", @socket.getpeername
+    p "Connected to server #{@socket.remote_address.getnameinfo.first}"
 
     while true do
       raw_msg = String.new
