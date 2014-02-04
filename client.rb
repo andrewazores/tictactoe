@@ -23,7 +23,7 @@ class Client
       raw_msg = String.new
       begin
         while true do
-          raw = @socket.recvfrom(16)[0].chomp
+          raw = @socket.recvfrom(16).first.chomp
           if not raw.eql? " " and not raw.eql? ""
             raw_msg = raw
             break

@@ -36,7 +36,7 @@ class Server
       send_message prompt_msg, @player_turn
 
       begin
-        raw_msg = @client_sockets[@player_turn].recvfrom(16)[0].chomp
+        raw_msg = @client_sockets[@player_turn].recvfrom(16).first.chomp
       rescue
         print "Connection to player #{@player_turn.to_s} lost"
         send_message Message.new("error", 5), (@player_turn + 1) % 2
@@ -130,7 +130,7 @@ class Server
   end
 
   def check_win
-    (0...2).each do |i|
+    [0, 1, 2].each do |i|
       send_win if check_seq i, i + 3, i + 6
     end
 
