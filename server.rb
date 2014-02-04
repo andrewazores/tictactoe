@@ -74,15 +74,14 @@ class Server
   end
 
   def handle_message msg
-    mthd = msg.method.to_s
-    mess = msg.message.to_s
+    method, message = msg.parts
 
     puts "\nReceived message from player #{@player_turn.to_s}:"
-    puts "\t#{mthd} #{mess}"
+    puts "\t#{method} #{message}"
 
-    if mthd == "move"
-      if @board[mess.to_i] == -1
-        @board[mess.to_i] = @player_turn
+    if method == "move"
+      if @board[message.to_i] == -1
+        @board[message.to_i] = @player_turn
         return true, ""
       else
         return false, 3
