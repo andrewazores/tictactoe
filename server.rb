@@ -95,8 +95,8 @@ class Server
 
   def send_message msg, player
     puts "\nPlayer #{player} being sent message:"
-    puts "\t#{msg.to_string}"
-    @client_sockets[player].puts msg.to_string
+    puts "\t#{msg.to_s}"
+    @client_sockets[player].puts msg.to_s
   end
 
   def board_to_string

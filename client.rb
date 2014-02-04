@@ -54,7 +54,7 @@ class Client
   def handle_message msg
     if not Message.validate_message msg
       p "Invalid message received"
-      p msg.to_string
+      p msg.to_s
       return
     end
     method, message = msg.parts
@@ -98,8 +98,8 @@ class Client
   end
 
   def send_message msg
-    p "Sending #{msg.to_string}"
-    @socket.puts msg.to_string
+    p "Sending #{msg.to_s}"
+    @socket.puts msg.to_s
   end
 
 end

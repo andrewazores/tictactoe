@@ -41,7 +41,7 @@ class Message
     Message.new args[0], args[1]
   end
 
-  def to_string
+  def to_s
     @method.to_s + " " + @message.to_s
   end
 
