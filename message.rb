@@ -10,14 +10,13 @@ class Message
     5 => "The server lost connection with your opponent"
   }
 
-  def initialize
-    @method = ""
-    @message = ""
-  end
-
   def initialize method, message
     @method = method
     @message = message
+  end
+
+  def parts
+    return @method, @message
   end
 
   def self.validate_message message
