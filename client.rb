@@ -7,8 +7,7 @@ class Client
 
   def initialize server, port
     Signal.trap "TERM" do
-      p "Exiting"
-      socket.close
+      shutdown
     end
     @server = server
     @port = port
@@ -33,7 +32,7 @@ class Client
       rescue Exception => e
         p e.message
         p e.backtrace.inspect
-        exit 1
+        shutdown 1
       end
 
       if raw_msg.length <= 0
@@ -42,22 +41,23 @@ class Client
       end
 
       msg = Message.message_from_string raw_msg.to_s
-      if not Message.validate_message msg
-        p "Invalid message received"
-        p msg.to_string
-      end
       handle_message msg
     end
     shutdown
   end
 
-  def shutdown
+  def shutdown code=0
     @socket.close
+    exit code
   end
 
   def handle_message msg
-    method = msg.method.to_s
-    message = msg.message.to_s
+    if not Message.validate_message msg
+      p "Invalid message received"
+      p msg.to_string
+      return
+    end
+    method, message = msg.parts
 
     if method == "connect"
       @player_number = message.to_i
@@ -69,23 +69,22 @@ class Client
         print "It's your turn! Make a move: "
         move = $stdin.gets.chomp
         if move == "quit" or move == "exit"
-          @socket.close
-          exit 0
+          shutdown 0
         end
         break if move.to_i >= 0 and move.to_i < 9
       end
       send_message Message.new "move", move
 
     elsif method == "error"
-      p Message.error_message message
+      p Message.error_message message.to_i
 
     elsif method == "game"
       if message == "win"
         p "You won! Yay!"
-        exit 0
+        shutdown 0
       elsif message == "lose"
         p "You are a failure."
-        exit 0
+        shutdown 0
       end
     end
   end
@@ -99,6 +98,7 @@ class Client
   end
 
   def send_message msg
+    p "Sending #{msg.to_string}"
     @socket.puts msg.to_string
   end
 
