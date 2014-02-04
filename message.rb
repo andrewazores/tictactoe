@@ -1,6 +1,5 @@
 class Message
-  attr_accessor :message
-  attr_accessor :method
+  attr_accessor :message, :method
 
   @errors =
   { 0 => "Invalid method",
