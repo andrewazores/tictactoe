@@ -20,7 +20,12 @@ class Server
   end
 
   def start
-    @socket = TCPServer.new @port
+    begin
+      @socket = TCPServer.new @port
+    rescue Exception => e
+      p "Could not bind to port #{@port}, check that it is not already in use"
+      exit 1
+    end
 
     @socket.listen 5
     puts "Server is: #{Socket.gethostname}"
