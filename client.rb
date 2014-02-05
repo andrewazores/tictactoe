@@ -18,7 +18,12 @@ class Client
 
   def start
     p "Connecting to #{@server}:#{@port}"
-    @socket = TCPSocket.new @server, @port
+    begin
+      @socket = TCPSocket.new @server, @port
+    rescue Exception => e
+      p "Could not connect to #{@server}:#{@port}. Verify a server is running at this location"
+      exit 1
+    end
 
     p "Connected to server #{@socket.remote_address.getnameinfo.first}"
 
