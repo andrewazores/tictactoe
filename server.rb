@@ -7,7 +7,7 @@ class Server
 
   def initialize port
     Signal.trap "TERM" do
-      p "Exiting"
+      puts "Exiting"
       @socket.close
     end
     @port = port.to_i
@@ -23,7 +23,7 @@ class Server
     begin
       @socket = TCPServer.new @port
     rescue Exception => e
-      p "Could not bind to port #{@port}, check that it is not already in use"
+      puts "Could not bind to port #{@port}, check that it is not already in use"
       exit 1
     end
 

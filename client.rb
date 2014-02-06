@@ -17,15 +17,15 @@ class Client
   end
 
   def start
-    p "Connecting to #{@server}:#{@port}"
+    puts "Connecting to #{@server}:#{@port}"
     begin
       @socket = TCPSocket.new @server, @port
     rescue Exception => e
-      p "Could not connect to #{@server}:#{@port}. Verify a server is running at this location"
+      puts "Could not connect to #{@server}:#{@port}. Verify a server is running at this location"
       exit 1
     end
 
-    p "Connected to server #{@socket.remote_address.getnameinfo.first}"
+    puts "Connected to server #{@socket.remote_address.getnameinfo.first}"
 
     while true do
       raw_msg = String.new
@@ -38,13 +38,13 @@ class Client
           end
         end
       rescue Exception => e
-        p e.message
-        p e.backtrace.inspect
+        puts e.message
+        puts e.backtrace.inspect
         shutdown 1
       end
 
       if raw_msg.length <= 0
-        p "Server connection lost"
+        puts "Server connection lost"
         break
       end
 
@@ -61,15 +61,15 @@ class Client
 
   def handle_message msg
     if not Message.validate_message msg
-      p "Invalid message received"
-      p msg.to_s
+      puts "Invalid message received"
+      puts msg.to_s
       return
     end
     method, message = msg.parts
 
     if method == "connect"
       @player_number = message.to_i
-      p "You are player number #{@player_number}"
+      puts "You are player number #{@player_number}"
 
     elsif method == "prompt"
       draw_board message
@@ -84,36 +84,36 @@ class Client
       send_message Message.new "move", move
 
     elsif method == "error"
-      p Message.error_message message.to_i
+      puts Message.error_message message.to_i
 
     elsif method == "game"
       if message == "win"
-        p "You won! Yay!"
+        puts "You won! Yay!"
         shutdown 0
       elsif message == "lose"
-        p "You are a failure."
+        puts "You are a failure."
         shutdown 0
       end
     end
   end
 
   def draw_board msg
-    p " " + msg[0] + " | " + msg[1] + " | " + msg[2]
-    p "-----------"
-    p " " + msg[3] + " | " + msg[4] + " | " + msg[5]
-    p "-----------"
-    p " " + msg[6] + " | " + msg[7] + " | " + msg[8]
+    puts " " + msg[0] + " | " + msg[1] + " | " + msg[2]
+    puts "-----------"
+    puts " " + msg[3] + " | " + msg[4] + " | " + msg[5]
+    puts "-----------"
+    puts " " + msg[6] + " | " + msg[7] + " | " + msg[8]
   end
 
   def send_message msg
-    p "Sending #{msg.to_s}"
+    puts "Sending #{msg.to_s}"
     @socket.puts msg.to_s
   end
 
 end
 
 if ARGV.length < 2
-  p "Please specify a host and port."
+  puts "Please specify a host and port."
   exit 1
 end
 
