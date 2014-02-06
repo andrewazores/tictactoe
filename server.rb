@@ -44,7 +44,7 @@ class Server
       send_message prompt_msg, @player_turn
 
       begin
-        raw_msg = @client_sockets[@player_turn].recvfrom(16).first.chomp
+        raw_msg = @client_sockets[@player_turn].gets.chomp
       rescue
         print "Connection to player #{@player_turn.to_s} lost"
         send_message Message.new("error", 5), (@player_turn + 1) % 2
